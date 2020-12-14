@@ -1,0 +1,29 @@
+server:
+  port: 9999
+spring:
+  application:
+    name: doc-converter
+  servlet:
+    multipart:
+      max-request-size: 20MB
+      max-file-size: 20MB
+  thymeleaf:
+    cache: false
+
+jodconverter:
+  local:
+    enabled: true
+    portNumbers: 10901
+    maxTasksPerProcess: 200
+    processTimeout: 1800000
+    taskExecutionTimeout: 1800000
+    workingDir: ./tmp/
+    format-options:
+      html:
+        store:
+          TEXT:
+            FilterOptions: EmbedImages
+      xhtml:
+        store:
+          TEXT:
+            FilterOptions: EmbedImages

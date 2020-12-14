@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>文档转换</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+</head>
+
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column" style="margin: 10px">
+			<ul class="nav nav-tabs">
+			</ul>
+			<div class="panel panel-default">
+
+				<div class="panel-heading">
+					<h4>Convert Office Documents</h4>
+				</div>
+				<div class="panel-body">
+					<form role="form" id="convertForm">
+						<div class="form-group">
+							<label for="inputFile">转换文件</label>
+							<input type="file" name= "inputFile" id="inputFile" onchange="onInputFileChange()" />
+						</div>
+						<button type="button" class="btn btn-info" id="uploadAndConvert" onclick="upload()">开始转换</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- loading -->
+<div class="modal fade" id="loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop='static'>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<span id="result">正在转换中,请稍候。。。</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<script type="text/javascript" src="./lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="./lib/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./js/converter.js"></script>
+	<script>
+		function onInputFileChange() {
+			var $inputFile = $('#inputFile');
+			var filename = $inputFile.val().split('\\').pop();
+			var re = /(?:\.([^.]+))?$/;
+			var ext = re.exec(filename)[1];
+			if (ext != "doc" && ext != "docx" && ext != "pdf") {
+				alert("格式不支持");
+				return false;
+			}
+		};
+
+		function upload() {
+			var $inputFile = $('#inputFile');
+			var filename = $inputFile.val().split('\\').pop();
+			if (!filename) {
+				return;
+			}
+			$('#loading').modal('show');
+			$('#uploadAndConvert').addClass("disabled");
+			var form = document.getElementById('convertForm'),
+			formData = new FormData(form);
+			$.ajax({
+				url:"docPdfConvert",
+				type:"post",
+				data:formData,
+				processData:false,
+				contentType:false,
+				success:function(res,status,request){
+					$("#inputFile").val("");
+					downloadFile(res);
+					$('#loading').modal('hide');
+					$('#uploadAndConvert').removeClass("disabled");
+				},
+				error:function(err){
+					$('#loading').modal('hide');
+					$('#uploadAndConvert').removeClass("disabled");
+				}
+			})
+		}
+
+		function downloadFile(filename) {
+			url = "download?fileName=" + encodeURIComponent(""+filename);
+			let a = document.createElement('a')//创建一个a标签
+			a.setAttribute("href", url);//添加URL
+			a.setAttribute('target', "_blank")//设置target属性
+			triggerEvent(a,'click');//触发事件
+		}
+		//点击事件
+		function triggerEvent(el, evName){
+			if(typeof el[evName] == 'function'){//如果存在这个事件就直接触发它
+				el[evName]();
+			}else if(el.fireEvent){//如果有触发事件的方法，就调用它
+				el.fireEvent('on' + evName);
+			}else if(document.createEvent){//否则只好手动触发
+				var evt = document.createEvent("MouseEvents"); //创建鼠标事件
+				evt.initEvent(evName, true, true); //初始化 事件
+				el.dispatchEvent(evt); //触发这个事件到此元素
+			}
+		}
+	</script>
+
+</body>
+</html>
