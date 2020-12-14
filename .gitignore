@@ -27,4 +27,4 @@ logs
 tmp
 file
 uploadFile
-
+.DS_Store
