@@ -10,7 +10,7 @@
 * 参考 [jodConvert documentation](https://github.com/sbraconnier/jodconverter/wiki) 了解jodConvert
 
 * step1：安装好openOffice （PS:如果是linux系统,可运行 install.sh install_font.sh 完成openOffice及字体库的安装）或者 libOffice
-* step2：启动本项目 [http://localhost:port/index] 实现转换
+* step2：根目录下创建 tmp/,启动本项目 [http://localhost:port/index] 实现转换
 
 
 ### 市面上常见解决方案
